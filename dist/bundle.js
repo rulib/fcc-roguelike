@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "cbc289d34c9e3a358093"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "384e578668f2c8a29d0b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -8167,6 +8167,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	__webpack_require__(266);
+
 	_reactDom2.default.render(_react2.default.createElement(_Game2.default, null), document.getElementById('app'));
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(255); if (makeExportsHot(module, __webpack_require__(146))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "rl-main.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
@@ -28686,6 +28687,8 @@
 	          this.drop();
 	        } else if (key === 14) {
 	          this.equip();
+	        } else if (key === 15) {
+	          this.use();
 	        }
 	      }
 	    }
@@ -28739,6 +28742,15 @@
 	    key: 'equip',
 	    value: function equip() {
 	      this.state.level.menu.equip();
+	      var menu = this.state.level.print('menu');
+	      this.setState({
+	        array: menu.map
+	      });
+	    }
+	  }, {
+	    key: 'use',
+	    value: function use() {
+	      this.state.level.menu.use();
 	      var menu = this.state.level.print('menu');
 	      this.setState({
 	        array: menu.map
@@ -28855,9 +28867,10 @@
 	        188: 11,
 	        13: 12,
 	        68: 13,
-	        69: 14
+	        69: 14,
+	        65: 15
 	      };
-	      if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40 || e.keyCode === 188 || e.keyCode === 73 || e.keyCode === 13 || e.keyCode === 68 || e.keyCode === 69) {
+	      if (keyTable[e.keyCode]) {
 	        this.props.keyHandler(keyTable[e.keyCode]);
 	      }
 	    }
@@ -29425,6 +29438,8 @@
 	  }, {
 	    key: 'defense',
 	    value: function defense(aggressor, dice, type, flatdamage, explodes) {
+	      var _this = this;
+
 	      // Defining natural armor
 	      var armor = this.stats.defense.ac;
 	      var lightArmor = this.stats.defense.acLight;
@@ -29433,17 +29448,29 @@
 
 	      // Defending with equipped items in all slots that have AC or light AC.
 	      if (this.stats.equipped) {
-	        for (var equipment in this.stats.equipped) {
-	          if (this.stats.equipped.hasOwnProperty(equipment)) {
-	            var AC = this.stats.equipped[equipment].stats.ac >= 0 ? this.stats.equipped[equipment].stats.ac : 0;
-	            var LAC = this.stats.equipped[equipment].stats.acLight <= 0 ? this.stats.equipped[equipment].stats.acLight : 0;
-	            armor += AC;
-	            lightArmor += LAC;
-	          }
-	        }
+	        (function () {
+	          var EQUIP = _this.stats.equipped;
+	          var KEYS = Object.keys(EQUIP);
+	          var getAc = function getAc(val) {
+	            if (EQUIP[val].stats.ac) {
+	              return EQUIP[val].stats.ac;
+	            }
+	            return 0;
+	          };
+	          var getLac = function getLac(val) {
+	            if (EQUIP[val].stats.acLight) {
+	              return EQUIP[val].stats.acLight;
+	            }
+	            return 0;
+	          };
+	          armor += KEYS.map(getAc).reduce(function (a, b) {
+	            return a + b;
+	          });
+	          lightArmor += KEYS.map(getLac).reduce(function (a, b) {
+	            return a + b;
+	          });
+	        })();
 	      }
-
-	      //These armor variables have now been modified per inventory
 
 	      console.log('Equipped armor: ' + armor + '; ' + lightArmor);
 	      var reduced = this.typeSubtract(armor, type);
@@ -29477,10 +29504,22 @@
 	      var dmg = damage;
 	      if (damage < 0) {
 	        dmg = 0;
-	      };
+	      }
 	      console.log(this.stats.name + ' #' + this.id + ' takes ' + dmg + ' \n      damage from the ' + aggressor.stats.name + ' #' + aggressor.id + ' \'s attack');
 	      this.stats.hp -= dmg;
 	      this.deathCheck(aggressor);
+	    }
+	  }, {
+	    key: 'heal',
+	    value: function heal(hp) {
+	      if (this.stats.hp === this.stats.maxHp) {
+	        return 0;
+	      } else if (this.stats.hp + hp < this.stats.maxHp) {
+	        this.stats.hp += hp;
+	        return 1;
+	      }
+	      this.stats.hp = this.stats.maxHp;
+	      return 1;
 	    }
 	  }, {
 	    key: 'deathCheck',
@@ -29548,17 +29587,35 @@
 	      this.location.level.updateMessage(name + ' ' + drops + ' the ' + itemToDrop.stats.name + '!');
 	    }
 	  }, {
+	    key: 'expend',
+	    value: function expend(inventory, item) {
+	      // takes an inventory and the index of an item to drop and gives it to the tile,
+	      var ITEM_TO_DROP = inventory[item];
+	      this.stats.carriedWeight -= ITEM_TO_DROP.stats.weight;
+	      inventory.splice(item, 1);
+	    }
+	  }, {
+	    key: 'use',
+	    value: function use(inventory, item) {
+	      // takes an inventory and the index of an item to drop and gives it to the tile,
+	      var ITEM = inventory[item];
+	      var USER = this;
+	      var USED = ITEM.use(USER);
+	      if (USED) {
+	        this.expend(inventory, item);
+	      }
+	    }
+	  }, {
 	    key: 'unEquip',
 	    value: function unEquip(slot) {
 	      if (!this.stats.equipped[slot].stats.fake) {
 	        this.stats.inventory.unshift(this.stats.equipped[slot]);
 	      }
-	      this.stats.equipped[slot] = { stats: { name: "Nothing", fake: 1 } };
+	      this.stats.equipped[slot] = { stats: { name: 'Nothing', fake: 1 } };
 	    }
 	  }, {
 	    key: 'equip',
 	    value: function equip(item) {
-
 	      if (item.stats.type && this.stats.equipped[item.stats.type] && this.stats.equipped[item.stats.type].id === item.id) {
 	        this.unEquip(item.stats.type);
 	      } else if (item.stats.type) {
@@ -29570,7 +29627,7 @@
 	        this.stats.equipped[item.stats.type] = item;
 	        this.stats.inventory.splice(INDEX, 1);
 	      } else {
-	        console.log("Item Unequippable!");
+	        console.log('Item Unequippable!');
 	      }
 	    }
 	  }, {
@@ -29634,11 +29691,11 @@
 	      color: 'maroon'
 	    };
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cat).call(this, loc, stats));
+	    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Cat).call(this, loc, stats));
 
-	    _this.stats.maxHp = 25 * _this.stats.level;
-	    _this.stats.hp = _this.stats.maxHp;
-	    return _this;
+	    _this2.stats.maxHp = 25 * _this2.stats.level;
+	    _this2.stats.hp = _this2.stats.maxHp;
+	    return _this2;
 	  }
 
 	  return Cat;
@@ -29679,11 +29736,11 @@
 	      carriedWeight: 0
 	    };
 
-	    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Dog).call(this, loc, stats));
+	    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Dog).call(this, loc, stats));
 
-	    _this2.stats.maxHp = 25 * _this2.stats.level;
-	    _this2.stats.hp = _this2.stats.maxHp;
-	    return _this2;
+	    _this3.stats.maxHp = 25 * _this3.stats.level;
+	    _this3.stats.hp = _this3.stats.maxHp;
+	    return _this3;
 	  }
 
 	  return Dog;
@@ -29701,9 +29758,13 @@
 	      weight: 20
 	    });
 	    var souvenir = new _Item2.default({
-	      name: 'Shiny trinket',
-	      symbol: 'o',
-	      weight: 1
+	      name: 'Healing Potion',
+	      symbol: '!',
+	      weight: 1,
+	      proc: {
+	        name: 'healPotion'
+
+	      }
 	    });
 	    var hat = new _Item2.default({
 	      name: 'Baseball Jersey',
@@ -29784,11 +29845,11 @@
 	    };
 	    stats.intrinsicInventory = [corpse];
 
-	    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, loc, stats));
+	    var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, loc, stats));
 
-	    _this3.stats.maxHp = 35 * _this3.stats.level;
-	    _this3.stats.hp = _this3.stats.maxHp;
-	    return _this3;
+	    _this4.stats.maxHp = 35 * _this4.stats.level;
+	    _this4.stats.hp = _this4.stats.maxHp;
+	    return _this4;
 	  }
 
 	  _createClass(Player, [{
@@ -29812,6 +29873,7 @@
 	        }
 	      }
 	      // Generate a list of farthest-away potentially-visible tiles and cast rays to them
+	      // Should refactor to Map probably
 	      var perim = new _Perimeter2.default(origin, r);
 	      for (var _i2 = 0; _i2 < perim.length; _i2++) {
 	        var ray = new _Ray2.default(origin, perim[_i2], r);
@@ -30182,6 +30244,27 @@
 	      return this.screen;
 	    }
 	  }, {
+	    key: 'use',
+	    value: function use() {
+	      if (this.pages[this.page] && this.highlight < this.pages[this.page].length) {
+	        //  reconstruct original inventory number:
+	        var n = this.pageLength;
+	        var page = this.page;
+	        var playerInv = this.data.stats.inventory;
+	        var player = this.data;
+	        var index = this.highlight + page * n;
+
+	        player.use(playerInv, index);
+	        this.inventory = this.data.stats.inventory;
+	        this.pages = this.paginate(this.inventory, this.pageLength);
+	        this.page = 0;
+
+	        //  Clear and re-render
+	        this.refresh();
+	      }
+	      return this.screen;
+	    }
+	  }, {
 	    key: 'equip',
 	    value: function equip() {
 	      var PLAYER = this.data;
@@ -30472,20 +30555,59 @@
 
 	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(77), RootInstanceProvider = __webpack_require__(85), ReactMount = __webpack_require__(87), React = __webpack_require__(146); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _d = __webpack_require__(260);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Item = function Item(stats) {
-	  _classCallCheck(this, Item);
+	var Item = function () {
+	  function Item(stats) {
+	    _classCallCheck(this, Item);
 
-	  this.stats = stats;
-	  this.id = Math.round(Math.random() * Date.now());
-	};
+	    this.stats = stats;
+	    this.id = Math.round(Math.random() * Date.now());
+	  }
+
+	  _createClass(Item, [{
+	    key: 'use',
+	    value: function use(user) {
+	      if (this.stats.proc && this.stats.proc.name) {
+	        return this[this.stats.proc.name](user);
+	      }
+	      return null;
+	    }
+	  }, {
+	    key: 'healPotion',
+	    value: function healPotion(user) {
+	      var HEAL_VALUE = (0, _d2.default)(3, 6, 1);
+	      var used = 1;
+	      // Makes sure potion is usable
+	      if (user.stats.hp === user.stats.maxHp) {
+	        used = 0;
+	        user.location.level.updateMessage('You are already at full health!');
+	      } else {
+	        used = 1;
+	        user.heal(HEAL_VALUE);
+	        user.location.level.updateMessage('You quaff the healing potion!');
+	      }
+	      // Player will destroy any object that reports it is used.
+	      return used;
+	    }
+	  }]);
+
+	  return Item;
+	}();
 
 	exports.default = Item;
 
