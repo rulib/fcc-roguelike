@@ -67,6 +67,8 @@ class Game extends React.Component {
         this.drop();
       } else if (key === 14) {
         this.equip();
+      } else if (key === 15) {
+        this.use();
       }
     }
   }
@@ -117,6 +119,14 @@ class Game extends React.Component {
 
   equip() {
     this.state.level.menu.equip();
+    const menu = this.state.level.print('menu');
+    this.setState({
+      array: menu.map,
+    });
+  }
+
+  use() {
+    this.state.level.menu.use();
     const menu = this.state.level.print('menu');
     this.setState({
       array: menu.map,

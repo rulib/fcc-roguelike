@@ -146,6 +146,26 @@ class Menu {
     return this.screen;
   }
 
+  use() {
+    if (this.pages[this.page] && this.highlight < this.pages[this.page].length) {
+      //  reconstruct original inventory number:
+      const n = this.pageLength;
+      const page = this.page;
+      const playerInv = this.data.stats.inventory;
+      const player = this.data;
+      const index = this.highlight + (page * n);
+
+      player.use(playerInv, index);
+      this.inventory = this.data.stats.inventory;
+      this.pages = this.paginate(this.inventory, this.pageLength);
+      this.page = 0;
+
+      //  Clear and re-render
+      this.refresh();
+    }
+    return this.screen;
+  }
+
   equip() {
     const PLAYER = this.data;
     const INV = PLAYER.stats.inventory;
