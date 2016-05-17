@@ -1,0 +1,413 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ha",
+				"handleDeath"
+			],
+			[
+				"playe",
+				"playerLocation"
+			],
+			[
+				"pla",
+				"playerLocation"
+			],
+			[
+				"i",
+				"i"
+			],
+			[
+				"item",
+				"itemToDrop"
+			],
+			[
+				"index",
+				"indexOf"
+			],
+			[
+				"dice",
+				"dice"
+			],
+			[
+				"weapon",
+				"Weapon"
+			],
+			[
+				"prev",
+				"prevButtonPoint"
+			],
+			[
+				"next",
+				"nextButtonPoint"
+			],
+			[
+				"butt",
+				"buttonPoint"
+			],
+			[
+				"equipped",
+				"equippedHighlightPoint"
+			],
+			[
+				"equ",
+				"equippedHighlightPoint"
+			],
+			[
+				"re",
+				"recipeIndex"
+			],
+			[
+				"render",
+				"renderRecipe"
+			],
+			[
+				"rende",
+				"renderRecipe"
+			],
+			[
+				"view",
+				"viewArgs"
+			],
+			[
+				"cl",
+				"clickHandle"
+			],
+			[
+				"cli",
+				"onClick"
+			],
+			[
+				"List",
+				"List"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "roguelike.md",
+			"settings":
+			{
+				"buffer_size": 3600,
+				"line_ending": "Windows",
+				"name": "The roguelike board is an array of tile objects"
+			}
+		},
+		{
+			"file": "rl-main.js",
+			"settings":
+			{
+				"buffer_size": 39948,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "pack",
+		"selected_items":
+		[
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"eslint",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Will/react/roguelike"
+	],
+	"file_history":
+	[
+		"/C/Users/Will/react/roguelike/rl-main.js",
+		"/C/Users/Will/react/roguelike/package.json",
+		"/C/Users/Will/react/react1/package.json",
+		"/C/Users/Will/react/react1/src/routes.js",
+		"/C/Users/Will/roguelike.bak",
+		"/C/Users/Will/react/react1/src/pages/MainPage.js",
+		"/C/Users/Will/react/react1/src/pages/List.js",
+		"/C/Users/Will/react/leaderboard/exampleSortFunction.js",
+		"/C/Users/Will/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/C/Users/Will/raycast.js",
+		"/C/Users/Will/mapgen.mp",
+		"/C/Users/Will/react/react1/src/index.js",
+		"/C/Users/Will/react/react1/readme.md",
+		"/C/Users/Will/react/react1/src/pages/Edit.js",
+		"/C/Users/Will/react/react1/src/pages/Recipe.js",
+		"/C/Users/Will/react/react1/.gitignore",
+		"/C/Users/Will/react/react1/dist/index.html",
+		"/C/Users/Will/react/react1/src/pages/Box.js",
+		"/C/Users/Will/react/react1/src/pages/app.js",
+		"/C/Users/Will/react/react1/.eslintrc.js",
+		"/C/Users/Will/react/react1/webpack.config.js",
+		"/C/Users/Will/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/Will/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"tick()",
+			"tick",
+			"updateMessage",
+			"message =",
+			"this.message = ",
+			"message",
+			"let play",
+			"this.state.player",
+			"updatemessage",
+			"attack",
+			"weapon",
+			"tick()",
+			"drop",
+			"maroon",
+			"spawnplayer",
+			"loc",
+			"equip",
+			"this.pages[",
+			"next(",
+			"pageMessage",
+			"equippedHighlight",
+			"equipped.highlightpoint",
+			"printData",
+			"printTitle",
+			"this.pages[page]",
+			"console.log",
+			"printtitle",
+			"map\\[i]\\[j].symbol",
+			"map[i][j].symbol",
+			"map\\[\\i\\]\\[\\j\\].symbol",
+			"map[i][j].symbol",
+			"interact with",
+			"attemptEntry",
+			"unsee",
+			"seen",
+			"///",
+			"console.log",
+			"fetchtile",
+			"splice",
+			"find",
+			"value",
+			"\n",
+			"/(apples\"/",
+			"control",
+			"ignore",
+			"package"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"this.state.level.player",
+			"this.equippedHighlight",
+			"this.pages[this.page]",
+			"turf",
+			"//console.log",
+			"age",
+			"\\\\n",
+			"\\n"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "roguelike.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3600,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								370,
+								370
+							]
+						],
+						"settings":
+						{
+							"auto_name": "The roguelike board is an array of tile objects",
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 135.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "rl-main.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 39948,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "roguelike.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 231.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
