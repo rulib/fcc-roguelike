@@ -35,3 +35,4 @@ jspm_packages
 
 #sublime text projects
 *.sublime-project
+*.sublime-workspace
