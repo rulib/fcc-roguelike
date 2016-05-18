@@ -60,7 +60,8 @@ class Dungeon {
     const DIR = input.dir;
   }
 
-  // Scans an area for viability of room based on input.origin, input.width, and input.height
+  // Scans an area for viability of room based on input.origin, input.dir,
+  // input.width, and input.height
   scan(input){
 
   }
