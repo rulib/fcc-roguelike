@@ -187,21 +187,19 @@ export class Mob {
 
     // Defending with equipped items in all slots that have AC or light AC.
     if (this.stats.equipped) {
-      for (let equipment in this.stats.equipped) {
-        if (this.stats.equipped.hasOwnProperty(equipment)) {
-          const AC = this.stats.equipped[equipment].stats.ac >= 0
-          ? this.stats.equipped[equipment].stats.ac
-          : 0;
-          const LAC = this.stats.equipped[equipment].stats.acLight <= 0
-            ? this.stats.equipped[equipment].stats.acLight
-            : 0;
-          armor += AC;
-          lightArmor += LAC;
-        }
-      }
+      const EQUIP = this.stats.equipped;
+      const KEYS = Object.keys(EQUIP);
+      const getAc = function getAc(val) {
+        if (EQUIP[val].stats.ac) { return EQUIP[val].stats.ac; }
+        return 0;
+      };
+      const getLac = function getLac(val) {
+        if (EQUIP[val].stats.acLight) { return EQUIP[val].stats.acLight; }
+        return 0;
+      };
+      armor += KEYS.map(getAc).reduce((a, b) => a + b);
+      lightArmor += KEYS.map(getLac).reduce((a, b) => a + b);
     }
-
-    //These armor variables have now been modified per inventory
 
     console.log(`Equipped armor: ${armor}; ${lightArmor}`);
     const reduced = this.typeSubtract(armor, type);
@@ -210,9 +208,9 @@ export class Mob {
 
     /* acLight is light armor, a negative number (for legacy reasons) that is added to the final
     damage total after armor has reduced die types and total number of dice. */
-    console.log(`Rolling ${redDice} d ${redType} to attack`)
+    console.log(`Rolling ${redDice} d ${redType} to attack`);
     const roll = d(redDice, redType, explodes);
-    const damage = roll + flatdamage + lightArmor;   
+    const damage = roll + flatdamage + lightArmor;
     let agg = '';
     let tar = '';
     let hit = '';
@@ -225,18 +223,29 @@ export class Mob {
       agg = 'You';
       hit = 'hit';
     }
-    
+
     this.location.level.updateMessage(`${agg} ${hit} ${tar}!`);
     this.takeDamage(damage, aggressor);
   }
 
   takeDamage(damage, aggressor) {
     let dmg = damage;
-    if (damage < 0){dmg = 0};
+    if (damage < 0) { dmg = 0; }
     console.log(`${this.stats.name} #${this.id} takes ${dmg} 
       damage from the ${aggressor.stats.name} #${aggressor.id} 's attack`);
     this.stats.hp -= dmg;
     this.deathCheck(aggressor);
+  }
+
+  heal(hp) {
+    if (this.stats.hp === this.stats.maxHp) {
+      return 0;
+    } else if (this.stats.hp + hp < this.stats.maxHp) {
+      this.stats.hp += hp;
+      return 1;
+    }
+    this.stats.hp = this.stats.maxHp;
+    return 1;
   }
 
   deathCheck(aggressor) {
@@ -298,28 +307,44 @@ export class Mob {
     this.location.level.updateMessage(`${name} ${drops} the ${itemToDrop.stats.name}!`);
   }
 
-  unEquip(slot){
-    if (!this.stats.equipped[slot].stats.fake){
-      this.stats.inventory.unshift(this.stats.equipped[slot]);
-    }
-    this.stats.equipped[slot] = {stats:{name:"Nothing", fake:1}};
+  expend(inventory, item) {
+    // takes an inventory and the index of an item to drop and gives it to the tile,
+    const ITEM_TO_DROP = inventory[item];
+    this.stats.carriedWeight -= ITEM_TO_DROP.stats.weight;
+    inventory.splice(item, 1);
   }
 
-  equip(item){
+  use(inventory, item) {
+    // takes an inventory and the index of an item to drop and gives it to the tile,
+    const ITEM = inventory[item];
+    const USER = this;
+    const USED = ITEM.use(USER);
+    if (USED) {
+      this.expend(inventory, item);
+    }
+  }
 
-    if(item.stats.type && this.stats.equipped[item.stats.type] && this.stats.equipped[item.stats.type].id === item.id) {
-      this.unEquip(item.stats.type)
+  unEquip(slot) {
+    if (!this.stats.equipped[slot].stats.fake) {
+      this.stats.inventory.unshift(this.stats.equipped[slot]);
+    }
+    this.stats.equipped[slot] = { stats: { name: 'Nothing', fake: 1 } };
+  }
+
+  equip(item) {
+    if (item.stats.type && this.stats.equipped[item.stats.type] && this.stats.equipped[item.stats.type].id === item.id) {
+      this.unEquip(item.stats.type);
     } else if (item.stats.type) {
-      this.unEquip(item.stats.type);  
+      this.unEquip(item.stats.type);
       const IS_ITEM = (test) => item.id === test.id;
       const INDEX = this.stats.inventory.findIndex(IS_ITEM);
       this.stats.equipped[item.stats.type] = item;
       this.stats.inventory.splice(INDEX, 1);
     } else {
-      console.log("Item Unequippable!")
+      console.log('Item Unequippable!');
     }
   }
-  
+
   pickUp() {
     const tile = this.fetchTile(5);
     const item = tile.giveItem();
@@ -423,9 +448,12 @@ export class Player extends Mob {
       weight: 20,
     });
     const souvenir = new Item({
-      name: 'Shiny trinket',
-      symbol: 'o',
+      name: 'Healing Potion',
+      symbol: '!',
       weight: 1,
+      proc: {
+        name: 'healPotion',
+      },
     });
     const hat = new Item({
       name: 'Baseball Jersey',
@@ -506,7 +534,7 @@ export class Player extends Mob {
     };
     stats.intrinsicInventory = [corpse];
     super(loc, stats);
-    this.stats.maxHp = 35*this.stats.level;
+    this.stats.maxHp = 35 * this.stats.level;
     this.stats.hp = this.stats.maxHp;
   }
 
@@ -529,6 +557,7 @@ export class Player extends Mob {
       }
     }
     // Generate a list of farthest-away potentially-visible tiles and cast rays to them
+    // Should refactor to Map probably
     const perim = new Perimeter(origin, r);
     for (let i = 0; i < perim.length; i++) {
       const ray = new Ray(origin, perim[i], r);

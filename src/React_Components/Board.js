@@ -28,10 +28,9 @@ class Board extends React.Component {
       13: 12,
       68: 13,
       69: 14,
+      65: 15,
     };
-    if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39
-     || e.keyCode === 40 || e.keyCode === 188 || e.keyCode === 73
-     || e.keyCode === 13 || e.keyCode === 68 || e.keyCode === 69) {
+    if (keyTable[e.keyCode]) {
       this.props.keyHandler(keyTable[e.keyCode]);
     }
   }
