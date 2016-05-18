@@ -453,7 +453,6 @@ export class Player extends Mob {
       weight: 1,
       proc: {
         name: 'healPotion',
-        
       },
     });
     const hat = new Item({
